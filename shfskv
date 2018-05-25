@@ -1,0 +1,41 @@
+#!/bin/sh
+
+datadir=/tmp/wat
+# TODO: ^ env?
+
+usage() {
+  echo "usage: $0 set|get key [value]";
+  exit;
+}
+
+_set() {
+  key=$1;
+  value=$2;
+
+  if [ -z $key ] || [ -z $value ]; then
+    usage && exit 1
+  fi
+
+  echo $value > $datadir/$key
+}
+
+_get() {
+  key=$1;
+
+  if [ -z $key ]; then
+    usage && exit 1
+  fi
+
+  if [ ! -f $datadir/$key ]; then
+    echo && exit 0
+  fi
+
+  cat $datadir/$key
+}
+
+command=$1
+case $command in
+  set) _set $2 "$3";;
+  get) _get $2 ;;
+  *) usage ;;
+esac
